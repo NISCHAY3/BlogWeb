@@ -7,6 +7,7 @@ const Component = styled(Box)`
     margin: auto;
     box-shadow: 5px 2px 5px 2px rgb(0 0 0 / 0.6);
     padding: 20px;
+    margin-top:120px;
 `;
 
 const Image = styled('img')({
@@ -19,6 +20,7 @@ const Image = styled('img')({
 const Wrapper = styled(Box)`
     padding: 25px 35px;
     display: flex;
+    margin-top:30px;
     flex-direction: column;
     align-items: center;
 
@@ -33,6 +35,8 @@ const LoginButton = styled(Button)`
     color: #fff;
     height: 48px;
     border-radius: 2px;
+    width:200px;
+
 `;
 
 const SignupButton = styled(Button)`
@@ -42,6 +46,7 @@ const SignupButton = styled(Button)`
     height: 48px;
     border-radius: 2px;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%);
+    width:200px
 `;
 
 const Text = styled(Typography)`
