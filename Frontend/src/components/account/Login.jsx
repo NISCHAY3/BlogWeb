@@ -54,12 +54,31 @@ const Text = styled(Typography)`
     font-size: 12px;
 `;
 
+const signupInitialValues = {
+    name: '',
+    usename: '',
+    password: ''
+
+}
+
 
 function Login() {
     const [account, toggleAccount] = useState('login');
+
+
     const toggleSignup = () => {
         account === 'signup' ? toggleAccount('login') : toggleAccount('signup');
     }
+
+    const [signup, setSignup] = useState(signupInitialValues);
+
+
+
+    const onInputChange = (e) => {
+        setSignup({ ...signup, [e.target.name]: e.target.value })
+    }
+
+
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
     return (
         <Component>
@@ -76,9 +95,9 @@ function Login() {
                             <SignupButton onClick={() => toggleSignup()} style={{ marginBottom: 50 }}>Create an account</SignupButton>
                         </Wrapper> :
                         <Wrapper>
-                            <TextField variant="standard" name='name' label='Enter Name' />
-                            <TextField variant="standard" name='username' label='Enter Username' />
-                            <TextField variant="standard" name='password' label='Enter Password' />
+                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' />
+                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
+                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
 
                             <SignupButton >Signup</SignupButton>
                             <Text style={{ textAlign: 'center' }}>OR</Text>
