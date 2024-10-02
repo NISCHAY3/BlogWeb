@@ -1,6 +1,9 @@
 import axios from 'axios';
-import { API_NOTIFICATION_MESSAGES, SERVICE_URLS } from '../constants/config.js'
-const API_URL = 'https://localhost:8000';
+
+import { API_NOTIFICATION_MESSAGES, SERVICE_URLS } from '../constants/config';
+import { getAccessToken, getRefreshToken, setAccessToken, getType } from '../utils/common-utils';
+
+const API_URL = 'http://localhost:8000';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
@@ -8,32 +11,37 @@ const axiosInstance = axios.create({
     headers: {
         "content-type": "application/json"
     }
-
-})
+});
 
 axiosInstance.interceptors.request.use(
     function (config) {
+        if (config.TYPE.params) {
+            config.params = config.TYPE.params
+        } else if (config.TYPE.query) {
+            config.url = config.url + '/' + config.TYPE.query;
+        }
         return config;
     },
-
     function (error) {
         return Promise.reject(error);
     }
-
-)
+);
 
 axiosInstance.interceptors.response.use(
     function (response) {
+        // Stop global loader here
         return processResponse(response);
     },
     function (error) {
+        // Stop global loader here
         return Promise.reject(ProcessError(error));
     }
 )
 
-
-
-
+///////////////////////////////
+// If success -> returns { isSuccess: true, data: object }
+// If fail -> returns { isFailure: true, status: string, msg: string, code: int }
+//////////////////////////////
 const processResponse = (response) => {
     if (response?.status === 200) {
         return { isSuccess: true, data: response.data }
@@ -47,7 +55,10 @@ const processResponse = (response) => {
     }
 }
 
-
+///////////////////////////////
+// If success -> returns { isSuccess: true, data: object }
+// If fail -> returns { isError: true, status: string, msg: string, code: int }
+//////////////////////////////
 const ProcessError = async (error) => {
     if (error.response) {
         // Request made and server responded with a status code 
@@ -99,7 +110,6 @@ const ProcessError = async (error) => {
         }
     }
 }
-
 
 const API = {};
 
