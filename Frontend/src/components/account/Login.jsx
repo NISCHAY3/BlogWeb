@@ -68,6 +68,12 @@ const signupInitialValues = {
 
 }
 
+const loginInitialValues = {
+    username: '',
+    password: ''
+
+}
+
 
 function Login() {
     const [account, toggleAccount] = useState('login');
@@ -78,6 +84,7 @@ function Login() {
     }
 
     const [signup, setSignup] = useState(signupInitialValues);
+    const [login, setLogin] = useState(loginInitialValues);
     const [error, showError] = useState('');
 
 
@@ -96,6 +103,22 @@ function Login() {
         }
     }
 
+    const onValueChange = (e) => {
+        setLogin({ ...login, [e.target.name]: e.target.value });
+    }
+
+    const loginUser = async () => {
+        let response = await API.userLogin();
+        if (response.isSuccess) {
+            setError('');
+        }
+        else {
+            setError('Something went Wrong! please try again later');
+        }
+
+    }
+
+
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
     return (
         <Component>
@@ -104,11 +127,11 @@ function Login() {
                 {
                     account === 'login' ?
                         <Wrapper>
-                            <TextField variant="standard" name='username' label='Enter Username' />
-                            <TextField variant="standard" name='password' label='Enter Password' />
+                            <TextField variant="standard" value={login.username} name='username' onChange={(e) => onValueChange(e)} label='Enter Username' />
+                            <TextField variant="standard" value={login.password} name='password' onChange={(e) => onValueChange(e)} label='Enter Password' />
                             {error && <Error>{error}</Error>}
 
-                            <LoginButton variant="contained" >Login</LoginButton>
+                            <LoginButton variant="contained" onClick={() => loginUser()} >Login</LoginButton>
                             <Text style={{ textAlign: 'center' }}>OR</Text>
                             <SignupButton onClick={() => toggleSignup()} style={{ marginBottom: 50 }}>Create an account</SignupButton>
                         </Wrapper> :
