@@ -1,29 +1,26 @@
-import React from 'react';
-import { useState } from 'react';
-import { Box, TextField, Button, styled, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Box, Button, Typography, styled } from '@mui/material';
 import { API } from '../../service/api.js';
+
 const Component = styled(Box)`
     width: 400px;
     margin: auto;
-    box-shadow: 5px 2px 5px 2px rgb(0 0 0 / 0.6);
-    padding: 20px;
-    margin-top:120px;
+    box-shadow: 5px 2px 5px 2px rgb(0 0 0/ 0.6);
 `;
 
 const Image = styled('img')({
     width: 100,
-    margin: 'auto',
     display: 'flex',
-    padding: '50px 0 0',
+    margin: 'auto',
+    padding: '50px 0 0'
 });
 
 const Wrapper = styled(Box)`
     padding: 25px 35px;
     display: flex;
-    margin-top:30px;
+    flex: 1;
+    overflow: auto;
     flex-direction: column;
-    align-items: center;
-
     & > div, & > button, & > p {
         margin-top: 20px;
     }
@@ -35,8 +32,6 @@ const LoginButton = styled(Button)`
     color: #fff;
     height: 48px;
     border-radius: 2px;
-    width:200px;
-
 `;
 
 const SignupButton = styled(Button)`
@@ -46,51 +41,61 @@ const SignupButton = styled(Button)`
     height: 48px;
     border-radius: 2px;
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%);
-    width:200px
 `;
 
 const Text = styled(Typography)`
     color: #878787;
     font-size: 12px;
 `;
+
 const Error = styled(Typography)`
     font-size: 10px;
     color: #ff6161;
     line-height: 0;
     margin-top: 10px;
     font-weight: 600;
-`
-
-const signupInitialValues = {
-    name: '',
-    usename: '',
-    password: ''
-
-}
+`;
 
 const loginInitialValues = {
     username: '',
     password: ''
+};
 
-}
+const signupInitialValues = {
+    name: '',
+    username: '',
+    password: '',
+};
 
-
-function Login() {
+const Login = ({ isUserAuthenticated }) => {
+    const [login, setLogin] = useState(loginInitialValues);
+    const [signup, setSignup] = useState(signupInitialValues);
+    const [error, showError] = useState('');
     const [account, toggleAccount] = useState('login');
 
+    const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
-    const toggleSignup = () => {
-        account === 'signup' ? toggleAccount('login') : toggleAccount('signup');
-    }
+    useEffect(() => {
+        showError('');
+    }, [login, signup]);
 
-    const [signup, setSignup] = useState(signupInitialValues);
-    const [login, setLogin] = useState(loginInitialValues);
-    const [error, showError] = useState('');
-
+    const onValueChange = (e) => {
+        setLogin({ ...login, [e.target.name]: e.target.value || '' });
+    };
 
     const onInputChange = (e) => {
-        setSignup({ ...signup, [e.target.name]: e.target.value })
-    }
+        setSignup({ ...signup, [e.target.name]: e.target.value || '' });
+    };
+
+    const loginUser = async () => {
+        let response = await API.userLogin(login);
+        if (response.isSuccess) {
+            showError('');
+            // Perform further actions like setting tokens and navigating
+        } else {
+            showError('Something went wrong! please try again later');
+        }
+    };
 
     const signupUser = async () => {
         let response = await API.userSignup(signup);
@@ -101,53 +106,75 @@ function Login() {
         } else {
             showError('Something went wrong! please try again later');
         }
-    }
+    };
 
-    const onValueChange = (e) => {
-        setLogin({ ...login, [e.target.name]: e.target.value });
-    }
+    const toggleSignup = () => {
+        account === 'signup' ? toggleAccount('login') : toggleAccount('signup');
+    };
 
-    const loginUser = async () => {
-        let response = await API.userLogin();
-        if (response.isSuccess) {
-            setError('');
-        }
-        else {
-            setError('Something went Wrong! please try again later');
-        }
-
-    }
-
-
-    const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
     return (
         <Component>
             <Box>
                 <Image src={imageURL} alt="blog" />
                 {
-                    account === 'login' ?
+                    account === 'login' ? (
                         <Wrapper>
-                            <TextField variant="standard" value={login.username} name='username' onChange={(e) => onValueChange(e)} label='Enter Username' />
-                            <TextField variant="standard" value={login.password} name='password' onChange={(e) => onValueChange(e)} label='Enter Password' />
+                            <TextField
+                                variant="standard"
+                                value={login.username || ''}
+                                onChange={(e) => onValueChange(e)}
+                                name='username'
+                                label='Enter Username'
+                            />
+                            <TextField
+                                variant="standard"
+                                value={login.password || ''}
+                                onChange={(e) => onValueChange(e)}
+                                name='password'
+                                label='Enter Password'
+                                type="password"  // Hide password
+                            />
+
                             {error && <Error>{error}</Error>}
 
-                            <LoginButton variant="contained" onClick={() => loginUser()} >Login</LoginButton>
+                            <LoginButton variant="contained" onClick={() => loginUser()}>Login</LoginButton>
                             <Text style={{ textAlign: 'center' }}>OR</Text>
                             <SignupButton onClick={() => toggleSignup()} style={{ marginBottom: 50 }}>Create an account</SignupButton>
-                        </Wrapper> :
+                        </Wrapper>
+                    ) : (
                         <Wrapper>
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='name' label='Enter Name' />
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
-                            <TextField variant="standard" onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
-                            {error && <Error>{error}</Error>}
-                            <SignupButton onClick={() => signupUser()} >Signup</SignupButton>
+                            <TextField
+                                variant="standard"
+                                value={signup.name || ''}
+                                onChange={(e) => onInputChange(e)}
+                                name='name'
+                                label='Enter Name'
+                            />
+                            <TextField
+                                variant="standard"
+                                value={signup.username || ''}
+                                onChange={(e) => onInputChange(e)}
+                                name='username'
+                                label='Enter Username'
+                            />
+                            <TextField
+                                variant="standard"
+                                value={signup.password || ''}
+                                onChange={(e) => onInputChange(e)}
+                                name='password'
+                                label='Enter Password'
+                                type="password"  // Hide password
+                            />
+
+                            <SignupButton onClick={() => signupUser()}>Signup</SignupButton>
                             <Text style={{ textAlign: 'center' }}>OR</Text>
                             <LoginButton variant="contained" onClick={() => toggleSignup()}>Already have an account</LoginButton>
                         </Wrapper>
+                    )
                 }
             </Box>
         </Component>
     );
-}
+};
 
 export default Login;
