@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { TextField, Box, Button, Typography, styled } from '@mui/material';
 import { API } from '../../service/api.js';
+import { useNavigate } from 'react-router-dom';
+
+
+
+import { dataContext } from '../../context/dataProvider.jsx';
 
 const Component = styled(Box)`
     width: 400px;
@@ -72,7 +77,9 @@ const Login = ({ isUserAuthenticated }) => {
     const [signup, setSignup] = useState(signupInitialValues);
     const [error, showError] = useState('');
     const [account, toggleAccount] = useState('login');
+    const { setAccount } = useContext(dataContext);
 
+    const navigate = useNavigate()
     const imageURL = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
     useEffect(() => {
@@ -91,7 +98,13 @@ const Login = ({ isUserAuthenticated }) => {
         let response = await API.userLogin(login);
         if (response.isSuccess) {
             showError('');
-            // Perform further actions like setting tokens and navigating
+
+            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
+            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
+
+            setAccount({ username: response.data.username }, { name: response.data.name });
+            navigate('/');
+
         } else {
             showError('Something went wrong! please try again later');
         }
