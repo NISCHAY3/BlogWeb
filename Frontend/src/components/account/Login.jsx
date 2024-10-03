@@ -103,6 +103,7 @@ const Login = ({ isUserAuthenticated }) => {
             sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
 
             setAccount({ username: response.data.username }, { name: response.data.name });
+            isUserAuthenticated(true);
             navigate('/');
 
         } else {
