@@ -28,10 +28,10 @@ export const API_NOTIFICATION_MESSAGES = {
 export const SERVICE_URLS = {
     userLogin: { url: '/login', method: 'POST' },
     userSignup: { url: '/signup', method: 'POST' },
+    uploadFile: { url: 'file/upload', method: 'POST' },
     // getAllPosts: { url: '/posts', method: 'GET', params: true },
     // getRefreshToken: { url: '/token', method: 'POST' },
-    // uploadFile: { url: 'file/upload', method: 'POST' },
-    // createPost: { url: 'create', method: 'POST' },
+    createPost: { url: 'create', method: 'POST' },
     // deletePost: { url: 'delete', method: 'DELETE', query: true },
     // getPostById: { url: 'post', method: 'GET', query: true },
     // newComment: { url: '/comment/new', method: 'POST' },

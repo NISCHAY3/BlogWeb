@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom
 import Login from './components/account/Login';
 import Home from './components/home/Home.jsx';
 import Header from './components/header/header.jsx';
+import CreatePost from './components/create/CreatePost.jsx';
 import './App.css';
 
 const PrivateRoute = ({ isAuthenticated, ...props }) => {
@@ -28,6 +29,9 @@ function App() {
           <Route path='/login' element={<Login isUserAuthenticated={isUserAuthenticated} />} />
           <Route path='/' element={<PrivateRoute isAuthenticated={isAuthenticated} />} >
             <Route path='/' element={<Home />} />
+          </Route>
+          <Route path='/create' element={<PrivateRoute isAuthenticated={isAuthenticated} />} >
+            <Route path='/create' element={<CreatePost />} />
           </Route>
         </Routes>
       </DataProvider>
